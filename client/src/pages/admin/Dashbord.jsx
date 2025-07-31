@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, Outlet } from 'react-router';
 
 
 const Dashbord = () => {
@@ -6,8 +7,8 @@ const Dashbord = () => {
 
   return (
     <div className={`dashboard-container ${collapsed ? 'collapsed' : ''}`}>
-        <style>
-            {`body {
+      <style>
+        {`body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -88,20 +89,20 @@ const Dashbord = () => {
   padding: 20px;
 }
 `}
-        </style>
+      </style>
       <div className="sidebar">
         <div className="sidebar-header">
           <h4>Admin</h4>
         </div>
         <ul className="nav-links">
-          <li>Session</li>
-          <li> <i className="fa-solid fa-user"></i> Subject</li>
-          <li>Examinee</li>
-          <li>Question Bank</li>
+          <li><Link to="/admin/session">Session</Link></li>
+          <li> <i className="fa-solid fa-user"></i><Link to="/admin/subject">Subject</Link></li>
+          <li><Link to="/admin/examinee">Examinee</Link></li>
+          <li><Link to=""></Link>Question Bank</li>
           <li>Examination</li>
-           <li>Result</li>
-            <li>Change Password</li>
-             <li>Logout</li>
+          <li>Result</li>
+          <li>Change Password</li>
+          <li>Logout</li>
         </ul>
       </div>
 
@@ -114,10 +115,12 @@ const Dashbord = () => {
         </div>
 
         <div className="content">
+          <Outlet />
           <p>Welcome to the admin dashboard. Use the sidebar to navigate.</p>
         </div>
       </div>
     </div>
+
   );
 };
 
