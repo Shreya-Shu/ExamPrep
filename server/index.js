@@ -14,8 +14,11 @@ const mongoose=require("mongoose");
     console.log('Error is$(err)')
  })
  // importing routes
- app.use('/api/examinee',require('./routes/examineeRoute'));
+ app.use('/api/examinee',require('./routes/examineeRoute'));//it will use the examineeRoute file for the '/api/examinee' endpoint
+ 
  app.use('/api/admin',require('./routes/adminRoute'));
+ //session route
+ app.use('/api/session/',require('./routes/sessionRoute'))
  app.listen(5000,()=>{
     console.log("server is connected on http://localhost:5000");
  })

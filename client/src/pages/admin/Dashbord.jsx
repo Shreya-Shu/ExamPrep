@@ -4,7 +4,13 @@ import { Link, Outlet } from 'react-router';
 
 const Dashbord = () => {
   const [collapsed, setCollapsed] = useState(false);
-
+const role=localStorage.getItem('role')
+if(role=="admin"){
+  var email=localStorage.getItem('email')
+}
+else{
+  window.location.href='/adlogin'
+}
   return (
     <div className={`dashboard-container ${collapsed ? 'collapsed' : ''}`}>
       <style>
@@ -102,7 +108,15 @@ const Dashbord = () => {
           <li>Examination</li>
           <li>Result</li>
           <li>Change Password</li>
-          <li>Logout</li>
+          
+          <li>
+            <Link onClick={()=>{
+              localStorage.removeItem('role')
+              localStorage.removeItem('email')
+              window.location.href='/adlogin'
+            }}>Logout</Link>
+            
+          </li>
         </ul>
       </div>
 
