@@ -21,15 +21,25 @@ const Session = () => {
     //window.alert("Hello")
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/session', form)
+      if(editForm){
+        const res = await axios.put(`http://localhost:5000/api/session/${id.id}`, form)
+      if (res) {
+        alert("Session edited Successfully")
+        handlefetch();
+      }
+      }
+      else{
+        const res = await axios.post('http://localhost:5000/api/session', form)
       if (res) {
         alert("Session added Successfully")
+        handlefetch();
       }
     }
-    catch (er) {
-      alert("Sorry Try Again later")
-    }
   }
+    catch (err) {
+      alert("sorry try again")
+    }
+  };
   //fetch data api
   const handlefetch = async () => {
     const res = await axios.get('http://localhost:5000/api/session')
@@ -39,6 +49,35 @@ const Session = () => {
     handlefetch();
   }, [])
   //console.log(data)
+  //handle delete logic
+const handleDelete=async(id)=>{
+//console.log(id)
+const res=await axios.delete(`http://localhost:5000/api/session/${id}`);
+if(res){
+  alert("Deleted successfully")
+  handlefetch();
+}else{
+  alert("try again later");
+}
+
+}
+//handle edit
+const[editForm,setEditForm]=useState(null);
+const [id,setId]=useState({
+  id:'',
+})
+const handleEdit=async(item)=>{
+  setForm({
+    name:item.name,
+    description:item.description
+  })
+   setEditForm(true);
+  setId({
+    id:item._id
+  })
+ 
+  console.log(form);
+}
   return (
     <div className="session">
       <h1 className="text-primary mb-4">
@@ -58,6 +97,7 @@ const Session = () => {
                 id="sessionName"
                 placeholder="Enter session name"
                 name="name"
+                value={form.name}
                 onChange={handleChange}
               />
             </div>
@@ -72,6 +112,7 @@ const Session = () => {
                 rows="4"
                 placeholder="Enter session description"
                 name='description'
+                value={form.description}
                 onChange={handleChange}
               ></textarea>
             </div>
@@ -113,7 +154,7 @@ const Session = () => {
                 <th>Session Name</th>
                 <th>Description</th>
                 <th>Start</th>
-                <th>End</th>
+                
                 <th>Actions</th>
               </tr>
             </thead>
@@ -126,8 +167,12 @@ const Session = () => {
                   <td>{item.description}</td>
                   <td>{item.createdAt}</td>
                   <td>
-                    <button>Delete</button>
+                    <button onClick={()=>handleDelete(item._id)}>Delete</button>
+                    <button onClick={()=>{
+                      handleEdit(item)
+                    }}>Edit</button>
                   </td>
+                  
 
                 </tr>
               ))}

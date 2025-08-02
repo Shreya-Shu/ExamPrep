@@ -19,6 +19,8 @@ const mongoose=require("mongoose");
  app.use('/api/admin',require('./routes/adminRoute'));
  //session route
  app.use('/api/session/',require('./routes/sessionRoute'))
+ //subject route
+ app.use('/api/subject',require('./routes/subjectRoute'))
  app.listen(5000,()=>{
     console.log("server is connected on http://localhost:5000");
  })

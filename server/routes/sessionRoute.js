@@ -19,4 +19,9 @@ router.delete('/:id',async(req,res)=>{
     //session.save();
     return res.json({message:'Deleted successfully'});
 })
+router.put('/:id',async(req,res)=>{
+    const{id}=req.params
+    const session=await Session.findByIdAndUpdate(id,req.body)
+    return res.json({message:"updated Successfully"})
+})
 module.exports=router;

@@ -24,12 +24,21 @@ const examineeSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    quqlification:{
+    qualification:{
         type:String,
         required:true
     },
+    session:{
+type:mongoose.Schema.Types.ObjectId,
+ref:'Session'
+    },
+
     status:{
+        type:String,
         enum:['active','inactive','delete']
     }
+},
+{
+    timestamps:true
 })
 module.exports=mongoose.model('Examinee',examineeSchema);

@@ -1,74 +1,131 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-function Subject() {
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+const Subject= () => {
+  const [form, setForm] = useState({
+    name: "",
+    description: ""
+  })
+  //fetch data hook
+  const [data, setData] = useState([]);
+  // handle change function
+  const handleChange = (e) => {
+    // console.log(e.target.value);
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev, [name]: value
+    }))
+    console.log(form)
+  }
+  //handleSubmit
+  const handleSubmit = async (e) => {
+    //window.alert("Hello")
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/api/subject', form)
+      if (res) {
+        alert("Subject added Successfully")
+      }
+    }
+    catch (er) {
+      alert("Sorry Try Again later")
+    }
+  }
+  //fetch data api
+  const handlefetch = async () => {
+    const res = await axios.get('http://localhost:5000/api/subject')
+    setData(res.data.data);
+  }
+  useEffect(() => {
+    handlefetch();
+  }, [])
+  //console.log(data)
   return (
-    <div
-      className="min-vh-100 d-flex align-items-center justify-content-center"
-      style={{
-        backgroundImage: 'url("https://freerangestock.com/photos/168817/concentrated-young-man-working-on-laptop.html")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        position: 'relative',
-        padding: '2rem',
-      }}
-    >
-      {/* Optional overlay for contrast */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          zIndex: 0,
-        }}
-      />
+    <div className="subject">
+      <h1 className="text-primary mb-4">
+        <i className="fa-solid fa-plus"></i>Add Session
+      </h1>
 
-      <div className="container position-relative" style={{ zIndex: 1 }}>
-        <div className="row justify-content-center">
-          <div className="col-md-6 bg-white shadow-lg rounded p-4">
-            <h3 className="text-center text-primary fw-bold mb-4">
-              Subject
-            </h3>
-            <form>
-              <div className="mb-3">
-                <label htmlFor="sessionName" className="form-label"> Add Subject</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="sessionName"
-                  required
-                  placeholder="Type your session name here..."
-                  style={{ borderRadius: '8px' }}
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="description" className="form-label">Description</label>
-                <textarea
-                  className="form-control"
-                  id="description"
-                  rows="3"
-                  required
-                  placeholder="Type your description here..."
-                  style={{ borderRadius: '8px' }}
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="btn btn-primary w-100 fw-bold"
-                style={{ borderRadius: '6px' }}
-              >
-                Submit
+      <div className="vh-80">
+        <div className="container py-4">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">
+                <i className="fa-solid fa-heading me-2 text-primary"></i>Subject Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="subjectName"
+                placeholder="Enter subject name"
+                name="name"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">
+                <i className="fa-solid fa-align-left me-2 text-primary"></i>Session Description
+              </label>
+              <textarea
+                className="form-control"
+                id="subjectDesc"
+                rows="4"
+                placeholder="Enter subject description"
+                name='description'
+                onChange={handleChange}
+              ></textarea>
+            </div>
+
+            
+
+            <div className="d-grid">
+              <button type="submit" className="btn btn-primary">
+                <i className="fa-solid fa-plus me-1"></i>Add Subject
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
+      </div>
+
+      <div className="row">
+        <div className="col-sm-2"></div>
+        <div className="col-sm-8">
+          <h4 className="mt-5 mb-3 text-center text-secondary">
+            <i className="fa-solid fa-table-list me-2"></i>Subject List
+          </h4>
+          <table className="table table-bordered text-center">
+            <thead className="table-primary">
+              <tr>
+              <th>s.no.</th>
+                <th>Subject Name</th>
+                <th>Description</th>
+                {/*<th>Start</th>
+                <th>End</th>*/}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/*Map through session data here */}
+              {data.map((item, i) => (
+                <tr key={item._id}>
+                  <td>{i+1}</td>
+                  <td>{item.name}</td>
+                  <td>{item.description}</td>
+                  {/* <td>{item.createdAt}</td>
+                  <td>
+                    <button>Delete</button>
+                  </td> */}
+
+                </tr>
+              ))}
+
+            </tbody>
+          </table>
+        </div>
+        <div className="col-sm-2"></div>
       </div>
     </div>
   );
-}
+};
 
 export default Subject;
