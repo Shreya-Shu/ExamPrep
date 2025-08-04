@@ -1,118 +1,206 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Registration = () => {
-  return (
-    <div
-      className="min-vh-100 d-flex align-items-center justify-content-center"
-      style={{
-        backgroundImage:
-          "url('https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Overlay for contrast */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 1,
-        }}
-      ></div>
+const [formData, setFormData] = useState({
+  name: '',
+  email: '',
+  number: '',      
+  address: '',
+  college: '',
+  qualification: '',
+  session: '',
+  password: '',
+});
 
-      {/* Form Container */}
-      <div className="container" style={{ zIndex: 2 }}>
-        <div className="row justify-content-center">
-          <div
-            className="col-md-6 col-lg-5 rounded shadow-lg p-4"
-            style={{
-              background: 'linear-gradient(to bottom right, #fefefe, #f0f0f0)',
-              border: '1px solid #ddd',
-            }}
-          >
-            <h2 className="text-center mb-4" style={{ color: '#333' }}>
-               Register & Rise
-            </h2>
-            <form>
-              <div className="mb-3">
-                <label className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="Enter your name"
-                />
+  const [session, setSession] = useState([]);
+  const handlefetch = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/session/');
+      setSession(res.data.data)
+    }
+    catch (er) {
+      console.log(er);
+    }
+  }
+  useEffect(() => {
+    handlefetch();
+  }, [])
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:5000/api/examinee', formData);
+      alert('Examinee Registered!');
+      setFormData({
+        name: '',
+        email: '',
+        number: '',
+        address: '',
+        college: '',
+        qualification: '',
+        session: '',
+        password: '',
+      });
+    } catch (error) {
+      console.error('Submission error', error);
+      alert('Failed to register');
+    }
+  };
+
+  return (
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-10 bg-light rounded shadow-lg p-4 border">
+          <h2 className="text-center mb-4 text-primary fw-bold">
+            Student Registration
+          </h2>
+          <form onSubmit={handleSubmit}>
+            <div className="row g-4">
+              {/* Left Column */}
+              <div className="col-md-6">
+                <div className="form-group mb-3">
+                  <label htmlFor="name" className="form-label fw-semibold">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    className="form-control border-primary"
+                    placeholder="Enter your name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="email" className="form-label fw-semibold">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="form-control border-primary"
+                    placeholder="name@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="phone" className="form-label fw-semibold">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    name="number"
+                    id="phone"
+                    className="form-control border-primary"
+                    placeholder="e.g. +91 98765xxxxx"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="address" className="form-label fw-semibold">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    id="address"
+                    className="form-control border-primary"
+                    placeholder="Your current address"
+                    value={formData.address}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-              <div className="mb-3">
-                <label className="form-label">Email address</label>
-                <input
-                  type="email"
-                  className="form-control form-control-lg"
-                  placeholder="name@example.com"
-                />
+
+              {/* Right Column */}
+              <div className="col-md-6">
+                <div className="form-group mb-3">
+                  <label htmlFor="college" className="form-label fw-semibold">
+                    College
+                  </label>
+                  <input
+                    type="text"
+                    name="college"
+                    id="college"
+                    className="form-control border-primary"
+                    placeholder="College name"
+                    value={formData.college}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="qualification" className="form-label fw-semibold">
+                    Qualification
+                  </label>
+                  <input
+                    type="text"
+                    name="qualification"
+                    id="qualification"
+                    className="form-control border-primary"
+                    placeholder="e.g. B.Tech, MBA..."
+                    value={formData.qualification}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="session" className="form-label fw-semibold">
+                    Session
+                  </label>
+                  <select
+                    name="session"
+                    id="session"
+                    className="form-select border-primary"
+                    value={formData.session}
+                    onChange={handleChange}
+                    
+                  >
+                    <option value="" disabled>
+                      Select Session
+                    </option>
+                    {session.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group mb-3">
+                  <label htmlFor="password" className="form-label fw-semibold">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    className="form-control border-primary"
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="d-grid">
+                  <button type="submit" className="btn btn-primary fw-semibold">
+                    Register
+                  </button>
+                </div>
               </div>
-              <div className="mb-3">
-                <label className="form-label">Phone Number</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="e.g. +91 98765xxxxx"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Address</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="Your current address"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">College</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="College name"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Qualification</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="e.g. B.Tech, MBA..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn w-100"
-                style={{
-                  backgroundColor: '#ff5722',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  letterSpacing: '0.5px',
-                }}
-              >
-                Register
-              </button>
-              <p className="mt-3 text-center">
-                Already registered?{' '}
-                <a
-                  href="/login"
-                  className="text-decoration-none fw-bold"
-                  style={{ color: '#ff5722' }}
-                >
-                  Login here
-                </a>
-              </p>
-            </form>
-          </div>
+            </div>
+          </form>
+          <p className="mt-4 text-center">
+            Already registered?{' '}
+            <a href="/login" className="text-decoration-none fw-semibold text-primary">
+              Login here
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -120,4 +208,3 @@ const Registration = () => {
 };
 
 export default Registration;
-

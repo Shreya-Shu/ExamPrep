@@ -3,7 +3,8 @@ const express = require('express');
 const router=express.Router();
 
 router.get('/',async(req,res)=>{// it will be used when we get the"get request".
-    return res.json("Api called successfully");
+    const examinee=await Examinee.find();
+    return res.json({data:examinee})
 })
 router.post('/',async(req,res)=>{
     const examinee= await new Examinee(req.body);
