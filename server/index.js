@@ -21,8 +21,10 @@ app.use('/api/admin', require('./routes/adminRoute'));
 app.use('/api/session/', require('./routes/sessionRoute'))
 //subject route
 app.use('/api/subject', require('./routes/subjectRoute'))
-//api ended
+//question  route
 app.use('/api/question/',require('./routes/questionRoute'))
+//examination route
+app.use('/api/exams/',require('./routes/examinationRoute'))
 app.listen(5000, () => {
    console.log("server is connected on http://localhost:5000");
 })

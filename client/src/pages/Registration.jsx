@@ -100,7 +100,7 @@ const [formData, setFormData] = useState({
                     id="phone"
                     className="form-control border-primary"
                     placeholder="e.g. +91 98765xxxxx"
-                    value={formData.phone}
+                    value={formData.number}
                     onChange={handleChange}
                   />
                 </div>

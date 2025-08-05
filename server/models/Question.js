@@ -17,6 +17,11 @@ type:String,
     },
     correctAnswer:{
 type:String,
+    },
+    subject:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Subject',
+        required:true,
     }
 },{
     timestamps:true

@@ -10,6 +10,7 @@ import Examinee from './pages/admin/Examinee';
 import AdminLogin from './pages/admin/AdminLogin';
 import Dashborduser from './pages/user/Dashborduser';
 import QuestionBank from './pages/admin/QuestionBank';
+import ExaminationForm from './pages/admin/Examination';
 const App = () => {
   return (
     <>
@@ -22,7 +23,7 @@ const App = () => {
         <Route path="/admin/" element={<Dashbord />} >
          <Route path="session" element={<Session/>}></Route>
          <Route path="questions" element={<QuestionBank/>}></Route>
-
+<Route path="exams" element={<ExaminationForm/>}></Route>
          <Route path="subject" element={<Subject/>}></Route>
          <Route path="examinee" element={<Examinee/>}></Route>
          </Route>

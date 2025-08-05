@@ -64,7 +64,7 @@ const Subject= () => {
 
             <div className="mb-3">
               <label className="form-label">
-                <i className="fa-solid fa-align-left me-2 text-primary"></i>Session Description
+                <i className="fa-solid fa-align-left me-2 text-primary"></i>Subject Description
               </label>
               <textarea
                 className="form-control"
@@ -99,8 +99,8 @@ const Subject= () => {
               <th>s.no.</th>
                 <th>Subject Name</th>
                 <th>Description</th>
-                {/*<th>Start</th>
-                <th>End</th>*/}
+                <th>Start</th>
+                {/*<th>End</th>*/}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -111,10 +111,11 @@ const Subject= () => {
                   <td>{i+1}</td>
                   <td>{item.name}</td>
                   <td>{item.description}</td>
-                  {/* <td>{item.createdAt}</td>
+                   <td>{item.createdAt}</td>
                   <td>
                     <button>Delete</button>
-                  </td> */}
+                    <button>Edit</button>
+                  </td> 
 
                 </tr>
               ))}

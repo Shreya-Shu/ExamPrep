@@ -9,13 +9,18 @@ const QuestionBank = () => {
     optionC: '',
     optionD: '',
     correctAnswer: '',
+    subject: '',
   });
 
   const [questions, setQuestions] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [editForm, setEditForm] = useState(false);
+  const [id, setId] = useState('');
 
-  // Load existing questions from backend
+  // Fetch all questions and subjects on mount
   useEffect(() => {
     fetchQuestions();
+    fetchSubjects();
   }, []);
 
   const fetchQuestions = async () => {
@@ -27,8 +32,18 @@ const QuestionBank = () => {
     }
   };
 
+  const fetchSubjects = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/subject');
+      setSubjects(res.data.data || []);
+    } catch (err) {
+      console.error('Error fetching subjects', err);
+      setSubjects([]);
+    }
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target; // use name instead of id
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -37,34 +52,62 @@ const QuestionBank = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      const res = await axios.post('http://localhost:5000/api/question', formData);
-      if (res) {
-        console.log('Question added successfully');
-        fetchQuestions(); // Refresh table with backend data
+      if (editForm) {
+        await axios.put(`http://localhost:5000/api/question/${id}`, formData);
+        setEditForm(false);
+        setId('');
+      } else {
+        await axios.post('http://localhost:5000/api/question', formData);
       }
+      fetchQuestions();
+      setFormData({
+        questionText: '',
+        optionA: '',
+        optionB: '',
+        optionC: '',
+        optionD: '',
+        correctAnswer: '',
+        subject: '',
+      });
     } catch (err) {
       console.error(err);
       alert('Sorry, try again.');
     }
+  };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/question/${id}`);
+      alert('Deleted successfully');
+      fetchQuestions();
+    } catch (err) {
+      alert('Try again later.');
+    }
+  };
+
+  const handleEdit = (item) => {
     setFormData({
-      questionText: '',
-      optionA: '',
-      optionB: '',
-      optionC: '',
-      optionD: '',
-      correctAnswer: '',
+      questionText: item.questionText,
+      optionA: item.optionA,
+      optionB: item.optionB,
+      optionC: item.optionC,
+      optionD: item.optionD,
+      correctAnswer: item.correctAnswer,
+      subject: item.subject, // Make sure to set subject
     });
+    setEditForm(true);
+    setId(item._id);
   };
 
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-4">React Question Bank Creator</h1>
+      <h1 className="text-center mb-4">Question Bank</h1>
 
       {/* Question Form */}
       <div className="card p-4 mb-4 shadow">
-        <h4 className="mb-3">Add a New Question</h4>
+        <h4 className="mb-3">{editForm ? 'Edit Question' : 'Add a New Question'}</h4>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="questionText" className="form-label">Question</label>
@@ -107,8 +150,26 @@ const QuestionBank = () => {
             <small className="form-text text-muted">Please type the full text of the correct option.</small>
           </div>
 
+          <div className="mb-3">
+            <label htmlFor="subject" className="form-label">Subject</label>
+            <select
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              className="form-select"
+              required
+            >
+              <option value="">Select subject</option>
+              {subjects.map((sub) => (
+                <option key={sub._id} value={sub._id}>{sub.name}</option>
+              ))}
+            </select>
+          </div>
+
           <div className="d-grid">
-            <button type="submit" className="btn btn-primary">Add Question</button>
+            <button type="submit" className="btn btn-primary">
+              {editForm ? 'Update Question' : 'Add Question'}
+            </button>
           </div>
         </form>
       </div>
@@ -127,24 +188,29 @@ const QuestionBank = () => {
                 <th>Option C</th>
                 <th>Option D</th>
                 <th>Correct Answer</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {questions.length > 0 ? (
                 questions.map((q, index) => (
                   <tr key={q._id}>
-                    <td>{questions.length - index}</td>
+                    <td>{index+1}</td>
                     <td>{q.questionText}</td>
                     <td>{q.optionA}</td>
                     <td>{q.optionB}</td>
                     <td>{q.optionC}</td>
                     <td>{q.optionD}</td>
                     <td>{q.correctAnswer}</td>
+                    <td>
+                      <button onClick={() => handleDelete(q._id)} className="me-2 rounded bg-danger text-white px-2">Delete</button>
+                      <button onClick={() => handleEdit(q)} className="me-2 rounded bg-primary text-white px-2">Edit</button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center text-muted">No questions added yet.</td>
+                  <td colSpan="8" className="text-center text-muted">No questions added yet.</td>
                 </tr>
               )}
             </tbody>

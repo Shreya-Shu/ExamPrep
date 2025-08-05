@@ -11,4 +11,14 @@ router.get('/',async(req,res)=>{
     const question=await Question.find();
     return res.json({data:question})
 })
+router.delete('/:id',async(req,res)=>{
+    const {id}=req.params;
+    const question=await Question.findByIdAndDelete(id);
+    return res.json({message:"deleted successfully"})
+}) ;  
+router.put('/:id',async(req,res)=>{
+    const{id}=req.params
+    const question=await Question.findByIdAndUpdate(id,req.body)
+    return res.json({message:"updated Successfully"})
+}) 
 module.exports=router

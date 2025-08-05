@@ -9,7 +9,10 @@ function Examinee() {
     qualification: '',
     address: '',
     number: '',
+    password:''
   });
+const [editMode, setEditMode] = useState(false);
+const [editId, setEditId] = useState(null);
 
   const [data, setData] = useState([]);
 
@@ -30,24 +33,63 @@ function Examinee() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    if (editMode) {
+      await axios.put(`http://localhost:5000/api/examinee/${editId}`, formData);
+      setEditMode(false);
+      setEditId(null);
+    } else {
       await axios.post('http://localhost:5000/api/examinee', formData);
-      setFormData({
-        name: '',
-        email: '',
-        number: '',
-        college: '',
-        qualification: '',
-        address: '',
-        number: '',
-      });
-      handleFetch();
-    } catch (error) {
-      console.error('Error submitting form:', error);
     }
-  };
+
+    setFormData({
+      name: '',
+      email: '',
+      number: '',
+      college: '',
+      qualification: '',
+      address: '',
+      password:''
+    });
+
+    handleFetch();
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  }
+};
+
+  const handleDelete=async(id)=>{
+//console.log(id)
+const res=await axios.delete(`http://localhost:5000/api/examinee/${id}`);
+if(res){
+  alert("Deleted successfully")
+  handleFetch();
+}else{
+  alert("try again later");
+}
+
+}
+const handleEdit=async(item)=>{
+  setFormData({
+    name:item.name,
+        email:item.email, 
+        number:item.number,
+        college:item.college,
+        qualification:item.qualification, 
+        address:item.address, 
+        password:item.password
+        
+  })
+   setEditMode(true);
+  setEditId(
+    item._id
+  )
+ 
+  console.log(formData);
+}
 
   return (
     <div style={styles.page}>
@@ -102,6 +144,15 @@ function Examinee() {
           />
           <input
             type="text"
+            name="password"
+            placeholder="password"
+            value={formData.password}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+          <input
+            type="text"
             name="number"
             placeholder="Phone Number"
             value={formData.number}
@@ -121,7 +172,10 @@ function Examinee() {
               <th style={styles.th}>College</th>
               <th style={styles.th}>Qualification</th>
               <th style={styles.th}>Address</th>
+              <th style={styles.th}>password</th>
               <th style={styles.th}>Number</th>
+              <th style={styles.th}>Actions</th>
+
             </tr>
           </thead>
           <tbody>
@@ -133,7 +187,14 @@ function Examinee() {
                 <td style={styles.td}>{item.college}</td>
                 <td style={styles.td}>{item.qualification}</td>
                 <td style={styles.td}>{item.address}</td>
+                 <td style={styles.td}>{item.password}</td>
                 <td style={styles.td}>{item.number}</td>
+                  <td>
+                    <button onClick={()=>handleDelete(item._id)}>Delete</button>
+                    <button onClick={()=>{
+                      handleEdit(item)
+                    }}>Edit</button>
+                  </td>
               </tr>
             ))}
           </tbody>

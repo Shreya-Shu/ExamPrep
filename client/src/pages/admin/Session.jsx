@@ -1,186 +1,252 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 const Session = () => {
   const [form, setForm] = useState({
     name: "",
-    description: ""
-  })
-  //fetch data hook
+    description: "",
+    startDate: "",
+    endDate: ""
+  });
+
   const [data, setData] = useState([]);
-  // handle change function
+  const [editForm, setEditForm] = useState(null);
+  const [id, setId] = useState({ id: '' });
+
   const handleChange = (e) => {
-    // console.log(e.target.value);
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev, [name]: value
-    }))
-    console.log(form)
-  }
-  //handleSubmit
+    }));
+  };
+
   const handleSubmit = async (e) => {
-    //window.alert("Hello")
     e.preventDefault();
     try {
-      if(editForm){
-        const res = await axios.put(`http://localhost:5000/api/session/${id.id}`, form)
-      if (res) {
-        alert("Session edited Successfully")
-        handlefetch();
+      if (editForm) {
+        const res = await axios.put(`http://localhost:5000/api/session/${id.id}`, form);
+        if (res) {
+          alert("Session edited Successfully");
+          resetForm();
+          handlefetch();
+        }
+      } else {
+        const res = await axios.post('http://localhost:5000/api/session', form);
+        if (res) {
+          alert("Session added Successfully");
+          resetForm();
+          handlefetch();
+        }
       }
-      }
-      else{
-        const res = await axios.post('http://localhost:5000/api/session', form)
-      if (res) {
-        alert("Session added Successfully")
-        handlefetch();
-      }
-    }
-  }
-    catch (err) {
-      alert("sorry try again")
+    } catch (err) {
+      alert("Sorry, try again");
     }
   };
-  //fetch data api
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      description: "",
+      startDate: "",
+      endDate: ""
+    });
+    setEditForm(false);
+    setId({ id: "" });
+  };
+
   const handlefetch = async () => {
-    const res = await axios.get('http://localhost:5000/api/session')
+    const res = await axios.get('http://localhost:5000/api/session');
     setData(res.data.data);
-  }
+  };
+
   useEffect(() => {
     handlefetch();
-  }, [])
-  //console.log(data)
-  //handle delete logic
-const handleDelete=async(id)=>{
-//console.log(id)
-const res=await axios.delete(`http://localhost:5000/api/session/${id}`);
-if(res){
-  alert("Deleted successfully")
-  handlefetch();
-}else{
-  alert("try again later");
-}
+  }, []);
 
-}
-//handle edit
-const[editForm,setEditForm]=useState(null);
-const [id,setId]=useState({
-  id:'',
-})
-const handleEdit=async(item)=>{
-  setForm({
-    name:item.name,
-    description:item.description
-  })
-   setEditForm(true);
-  setId({
-    id:item._id
-  })
- 
-  console.log(form);
-}
+  const handleDelete = async (id) => {
+    const res = await axios.delete(`http://localhost:5000/api/session/${id}`);
+    if (res) {
+      alert("Deleted successfully");
+      handlefetch();
+    } else {
+      alert("Try again later");
+    }
+  };
+
+  const handleEdit = async (item) => {
+    setForm({
+      name: item.name,
+      description: item.description,
+      startDate: item.startDate || "",
+      endDate: item.endDate || ""
+    });
+    setEditForm(true);
+    setId({ id: item._id });
+  };
+
   return (
-    <div className="session">
-      <h1 className="text-primary mb-4">
-        <i className="fa-solid fa-plus"></i>Add Session
+    <div className="session-container">
+      <style>{`
+        .session-container {
+          background: linear-gradient(120deg, #e0f7fa, #f0f4ff);
+          min-height: 100vh;
+          padding: 2rem 1rem;
+        }
+
+        .glass-card {
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(10px);
+          border-radius: 16px;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          padding: 30px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control {
+          background-color: rgba(255, 255, 255, 0.6);
+          border: 1px solid #ccddee;
+          border-radius: 10px;
+          padding: 0.6rem;
+        }
+
+        .form-label {
+          font-weight: 500;
+          color: #333;
+        }
+
+        .glass-btn {
+          background: #4d94ff;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          padding: 10px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+
+        .glass-btn:hover {
+          background-color: #3366cc;
+        }
+
+        .table-wrapper {
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 15px;
+          padding: 20px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        table th,
+        table td {
+          vertical-align: middle;
+          background-color: transparent !important;
+        }
+
+        .btn-info, .btn-danger {
+          border-radius: 8px;
+        }
+      `}</style>
+
+      <h1 className="text-center text-dark mb-4">
+        <i className="fa-solid fa-plus me-2"></i> Add Session
       </h1>
 
-      <div className="vh-80">
-        <div className="container py-4">
+      <div className="container">
+        <div className="glass-card mb-5">
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">
-                <i className="fa-solid fa-heading me-2 text-primary"></i>Session Name
-              </label>
+              <label className="form-label">Session Name</label>
               <input
                 type="text"
                 className="form-control"
-                id="sessionName"
-                placeholder="Enter session name"
                 name="name"
+                placeholder="Enter session name"
                 value={form.name}
                 onChange={handleChange}
+                required
               />
             </div>
 
             <div className="mb-3">
-              <label className="form-label">
-                <i className="fa-solid fa-align-left me-2 text-primary"></i>Session Description
-              </label>
+              <label className="form-label">Session Description</label>
               <textarea
                 className="form-control"
-                id="sessionDesc"
-                rows="4"
+                name="description"
                 placeholder="Enter session description"
-                name='description'
                 value={form.description}
                 onChange={handleChange}
-              ></textarea>
+                rows={4}
+                required
+              />
             </div>
 
             <div className="row">
-              <div className="col-sm-6 mb-3">
-                <label htmlFor="startDate" className="form-label">
-                  <i className="fa-solid fa-play me-2 text-success"></i>Start Date
-                </label>
-                <input type="date" className="form-control" id="startDate" />
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Start Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  name="startDate"
+                  value={form.startDate}
+                  onChange={handleChange}
+                />
               </div>
-              <div className="col-sm-6 mb-3">
-                <label htmlFor="endDate" className="form-label">
-                  <i className="fa-solid fa-stop me-2 text-danger"></i>End Date
-                </label>
-                <input type="date" className="form-control" id="endDate" />
+              <div className="col-md-6 mb-3">
+                <label className="form-label">End Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  name="endDate"
+                  value={form.endDate}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
             <div className="d-grid">
-              <button type="submit" className="btn btn-primary">
-                <i className="fa-solid fa-plus me-1"></i>Add Session
+              <button type="submit" className="glass-btn">
+                <i className={`fa-solid ${editForm ? "fa-edit" : "fa-plus"} me-2`}></i>
+                {editForm ? "Update Session" : "Add Session"}
               </button>
             </div>
           </form>
         </div>
-      </div>
 
-      <div className="row">
-        <div className="col-sm-2"></div>
-        <div className="col-sm-8">
-          <h4 className="mt-5 mb-3 text-center text-secondary">
+        <div className="table-wrapper">
+          <h4 className="text-center text-secondary mb-3">
             <i className="fa-solid fa-table-list me-2"></i>Session List
           </h4>
-          <table className="table table-bordered text-center">
-            <thead className="table-primary">
-              <tr>
-              <th>s.no.</th>
-                <th>Session Name</th>
-                <th>Description</th>
-                <th>Start</th>
-                
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/*Map through session data here */}
-              {data.map((item, i) => (
-                <tr key={item._id}>
-                  <td>{i+1}</td>
-                  <td>{item.name}</td>
-                  <td>{item.description}</td>
-                  <td>{item.createdAt}</td>
-                  <td>
-                    <button onClick={()=>handleDelete(item._id)}>Delete</button>
-                    <button onClick={()=>{
-                      handleEdit(item)
-                    }}>Edit</button>
-                  </td>
-                  
-
+          <div className="table-responsive">
+            <table className="table table-bordered text-center">
+              <thead className="table-light">
+                <tr>
+                  <th>S.No.</th>
+                  <th>Session Name</th>
+                  <th>Description</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map((item, i) => (
+                  <tr key={item._id}>
+                    <td>{i + 1}</td>
+                    <td>{item.name}</td>
+                    <td>{item.description}</td>
+                    <td>{new Date(item.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <button className="btn btn-danger btn-sm me-2" onClick={() => handleDelete(item._id)}>
+                        <i className="fa-solid fa-trash me-1"></i> Delete
+                      </button>
+                      <button className="btn btn-info btn-sm" onClick={() => handleEdit(item)}>
+                        <i className="fa-solid fa-pen-to-square me-1"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="col-sm-2"></div>
       </div>
     </div>
   );
