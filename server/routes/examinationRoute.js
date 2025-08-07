@@ -3,6 +3,8 @@ const router = express.Router();
 const Question = require('../models/Question');
 const Examination = require('../models/Examination');
 const mongoose = require('mongoose');
+const Examinee = require('../models/Examinee');
+const ExamAttempted = require('../models/ExamAttempted');
 
 // POST: Create a new exam
 router.post('/', async (req, res) => {
@@ -83,7 +85,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET: Fetch all exams
-router.get('/', async (req, res) => {
+router.get('/exams', async (req, res) => {
   try {
     const exams = await Examination.find({}, 'title date time status')
       .populate('sessionId', 'name')
@@ -190,6 +192,124 @@ router.get('/exam/:examId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+router.post('/submit-exam', async (req, res) => {
+  try {
+    const { examId, answers, email } = req.body;
+    const userId = await Examinee.findOne({ email: email })
+
+    if (!mongoose.Types.ObjectId.isValid(examId)) {
+      return res.status(400).json({ error: `Invalid exam ID: ${examId}` });
+    }
+
+    const exam = await Examination.findById(examId).populate('questions');
+    if (!exam) {
+      return res.status(404).json({ error: 'Exam not found' });
+    }
+    // here is
+    let score = 0;
+    const totalMarks = parseInt(exam.totalMarks);
+    const marksPerQuestion = totalMarks / exam.questions.length;
+
+    const results = exam.questions.map((question) => {
+      const submittedAnswer = answers[question._id];
+      const isCorrect = submittedAnswer === question.correctAnswer;
+      if (isCorrect) {
+        score += marksPerQuestion;
+      }
+      return {
+        questionId: question._id,
+        question: question.question,
+        selectedAnswer: submittedAnswer,
+        correctAnswer: question.correctAnswer,
+        isCorrect,
+      };
+    });
+
+    const passed = score >= parseInt(exam.passingMarks);
+    const examAttempted = await new ExamAttempted({
+      examineeId: userId._id,
+      examId: exam._id,
+      score,
+      totalMarks,
+      passingMarks: parseInt(exam.passingMarks),
+      status: passed ? 'Passed' : 'Failed',
+      resultStatus: 'Pending',
+    });
+    await examAttempted.save();
+
+    res.json({ message: "Exam submitted successfully" });
+
+
+
+
+
+  } catch (err) {
+    console.error('Error submitting exam:', err);
+    res.status(500).json({ error: 'Failed to submit exam' });
+  }
+});
+router.get('/report', async (req, res) => {
+  try {
+    const exams = await ExamAttempted.find()
+      .populate('examineeId', 'email')
+      .populate('examId', 'title date time');
+
+    const report = exams.map(exam => ({
+      examineeEmail: exam.examineeId.email,
+      examTitle: exam.examId.title,
+      score: exam.score,
+      totalMarks: exam.totalMarks,
+      passingMarks: exam.passingMarks,
+      status: exam.status,
+      resultStatus: exam.resultStatus,
+      attemptedAt: exam.createdAt
+    }));
+
+    res.json(report);
+  } catch (err) {
+    console.error('Error generating report:', err);
+    res.status(500).json({ error: 'Failed to generate report' });
+  }
+})
+// update examination all the data in the 
+
+router.post('/result/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const exam = await ExamAttempted.findByIdAndUpdate(
+      id,
+      { resultStatus: 'Completed', updatedAt: new Date() },
+      { new: true }
+    ).populate('examId');
+    if (!exam) {
+      return res.status(404).json({ message: "Exam attempt not found" });
+    }
+    return res.json({ message: "Result Declared Successfully", exam });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error while declaring result" });
+  }
+});
+// get all examination
+router.get('/examination', async (req, res) => {
+  const examination = await ExamAttempted.find({ resultStatus: 'Pending' }).populate('examId')
+  return res.json({ message: examination })
+})
+
+// get user by using examinee id 
+router.get('/examinee-result/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const examination = await ExamAttempted.findOne({
+      resultStatus: 'Pending',
+      examineeId: id,
+    }).populate('examId').populate('examineeId');
+
+    return res.json({ message: examination });
+  } catch (error) {
+    console.error('Error fetching examinee result:', error);
+    return res.status(500).json({ error: 'Failed to fetch result' });
+  }
+});
 
 module.exports = router;
-
