@@ -8,7 +8,7 @@ router.post('/',async(req,res)=>{
     return res.json({message:"Question Added successfully"});
 })
 router.get('/',async(req,res)=>{
-    const question=await Question.find();
+    const question=await Question.find().populate('subject');
     return res.json({data:question})
 })
 router.delete('/:id',async(req,res)=>{

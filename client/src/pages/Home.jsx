@@ -1,5 +1,5 @@
 import React from 'react';
-import image1 from '../assets/images/images1.jpg';
+
 import image2 from '../assets/images/images2.jpg';
 import image3 from '../assets/images/images3.jpg'
 const Home = () => {
@@ -140,7 +140,7 @@ const Home = () => {
 
         {/* Image Collage */}
         <div style={styles.heroImage}>
-          <img src={image1} alt="student1" style={styles.imageGrid} />
+          <img src={image2} alt="student1" style={styles.imageGrid} />
           <img src={image2} alt="student2" style={styles.imageGrid} />
           <img src={image3} alt="student3" style={styles.imageGrid} />
           <img src="https://via.placeholder.com/200x160?text=Student+4" alt="student4" style={styles.imageGrid} />
