@@ -9,10 +9,11 @@ function Examinee() {
     qualification: '',
     address: '',
     number: '',
-    password: ''
+    password:''
   });
-  const [editMode, setEditMode] = useState(false);
-  const [editId, setEditId] = useState(null);
+const [editMode, setEditMode] = useState(false);
+const [editId, setEditId] = useState(null);
+
   const [data, setData] = useState([]);
 
   const handleFetch = async () => {
@@ -32,96 +33,66 @@ function Examinee() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      if (editMode) {
-        await axios.put(`http://localhost:5000/api/examinee/${editId}`, formData);
-        setEditMode(false);
-        setEditId(null);
-      } else {
-        await axios.post('http://localhost:5000/api/examinee', formData);
-      }
-
-      setFormData({
-        name: '',
-        email: '',
-        number: '',
-        college: '',
-        qualification: '',
-        address: '',
-        password: ''
-      });
-
-      handleFetch();
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const res = await axios.delete(`http://localhost:5000/api/examinee/${id}`);
-    if (res) {
-      alert('Deleted successfully');
-      handleFetch();
+  try {
+    if (editMode) {
+      await axios.put(`http://localhost:5000/api/examinee/${editId}`, formData);
+      setEditMode(false);
+      setEditId(null);
     } else {
-      alert('Try again later');
+      await axios.post('http://localhost:5000/api/examinee', formData);
     }
-  };
 
-  const handleEdit = (item) => {
     setFormData({
-      name: item.name,
-      email: item.email,
-      number: item.number,
-      college: item.college,
-      qualification: item.qualification,
-      address: item.address,
-      password: item.password
+      name: '',
+      email: '',
+      number: '',
+      college: '',
+      qualification: '',
+      address: '',
+      password:''
     });
-    setEditMode(true);
-    setEditId(item._id);
-  };
+
+    handleFetch();
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  }
+};
+
+  const handleDelete=async(id)=>{
+//console.log(id)
+const res=await axios.delete(`http://localhost:5000/api/examinee/${id}`);
+if(res){
+  alert("Deleted successfully")
+  handleFetch();
+}else{
+  alert("try again later");
+}
+
+}
+const handleEdit=async(item)=>{
+  setFormData({
+    name:item.name,
+        email:item.email, 
+        number:item.number,
+        college:item.college,
+        qualification:item.qualification, 
+        address:item.address, 
+        password:item.password
+        
+  })
+   setEditMode(true);
+  setEditId(
+    item._id
+  )
+ 
+  console.log(formData);
+}
 
   return (
     <div style={styles.page}>
-      <style>{`
-        body {
-          font-family: 'Poppins', sans-serif;
-          background: #e7f0ff;
-          color: #1a2e65;
-          user-select: none;
-        }
-        input, button {
-          font-family: inherit;
-        }
-        input::placeholder {
-          color: #a0b3d6;
-          opacity: 1;
-        }
-        input:-ms-input-placeholder {
-          color: #a0b3d6;
-        }
-        input::-ms-input-placeholder {
-          color: #a0b3d6;
-        }
-        button {
-          transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-        button:hover {
-          cursor: pointer;
-          box-shadow: 0 6px 20px rgba(54,121,243,0.5);
-        }
-        table {
-          border-spacing: 0 12px !important;
-          border-collapse: separate !important;
-        }
-        table thead th {
-          user-select: none;
-        }
-      `}</style>
-
       <div style={styles.card}>
         <h2 style={styles.heading}>Student Registration</h2>
 
@@ -134,7 +105,6 @@ function Examinee() {
             onChange={handleChange}
             style={styles.input}
             required
-            autoComplete="name"
           />
           <input
             type="email"
@@ -144,7 +114,6 @@ function Examinee() {
             onChange={handleChange}
             style={styles.input}
             required
-            autoComplete="email"
           />
           <input
             type="text"
@@ -176,12 +145,11 @@ function Examinee() {
           <input
             type="text"
             name="password"
-            placeholder="Password"
+            placeholder="password"
             value={formData.password}
             onChange={handleChange}
             style={styles.input}
             required
-            autoComplete="new-password"
           />
           <input
             type="text"
@@ -191,14 +159,11 @@ function Examinee() {
             onChange={handleChange}
             style={styles.input}
             required
-            autoComplete="tel"
           />
-          <button type="submit" style={styles.button}>
-            {editMode ? 'Update' : 'Register'}
-          </button>
+          <button type="submit" style={styles.button}>Register</button>
         </form>
 
-        <table style={styles.table} aria-label="Examinee List">
+        <table style={styles.table}>
           <thead>
             <tr>
               <th style={styles.th}>#</th>
@@ -207,38 +172,29 @@ function Examinee() {
               <th style={styles.th}>College</th>
               <th style={styles.th}>Qualification</th>
               <th style={styles.th}>Address</th>
-              <th style={styles.th}>Password</th>
+              <th style={styles.th}>password</th>
               <th style={styles.th}>Number</th>
               <th style={styles.th}>Actions</th>
+
             </tr>
           </thead>
           <tbody>
             {data.map((item, i) => (
-              <tr key={item._id} style={styles.tableRow}>
+              <tr key={item._id}>
                 <td style={styles.td}>{i + 1}</td>
                 <td style={styles.td}>{item.name}</td>
                 <td style={styles.td}>{item.email}</td>
                 <td style={styles.td}>{item.college}</td>
                 <td style={styles.td}>{item.qualification}</td>
                 <td style={styles.td}>{item.address}</td>
-                <td style={styles.td}>{item.password}</td>
+                 <td style={styles.td}>{item.password}</td>
                 <td style={styles.td}>{item.number}</td>
-                <td style={{ ...styles.td, display: 'flex', gap: '8px' }}>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    style={{ ...styles.actionButton, ...styles.deleteBtn }}
-                    aria-label={`Delete ${item.name}`}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => handleEdit(item)}
-                    style={{ ...styles.actionButton, ...styles.editBtn }}
-                    aria-label={`Edit ${item.name}`}
-                  >
-                    Edit
-                  </button>
-                </td>
+                  <td>
+                    <button onClick={()=>handleDelete(item._id)}>Delete</button>
+                    <button onClick={()=>{
+                      handleEdit(item)
+                    }}>Edit</button>
+                  </td>
               </tr>
             ))}
           </tbody>
@@ -254,18 +210,16 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     minHeight: '100vh',
-    background: 'linear-gradient(120deg, #e6f0ff, #f6faff)',
+    background: '#f3f4f6',
     padding: '40px 20px',
-    fontFamily: "'Poppins', sans-serif",
-    color: '#1a2e65'
   },
   card: {
     width: '100%',
     maxWidth: '1100px',
-    backgroundColor: 'rgba(255 255 255 / 0.9)',
+    backgroundColor: '#ffffff',
     padding: '30px',
     borderRadius: '20px',
-    boxShadow: '0 8px 24px rgba(90 117 170 / 0.15)',
+    boxShadow: '0 0 20px rgba(0,0,0,0.1)',
   },
   heading: {
     fontSize: '28px',
@@ -273,91 +227,49 @@ const styles = {
     marginBottom: '30px',
     textAlign: 'center',
     color: '#1f2937',
-    userSelect: 'none',
   },
   form: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '18px',
-    marginBottom: '36px',
+    gap: '15px',
+    marginBottom: '30px',
     justifyContent: 'space-between',
   },
   input: {
     flex: '1 1 30%',
     padding: '12px',
-    borderRadius: '15px',
-    border: '1.8px solid #a3bee9',
-    fontSize: '1rem',
-    backgroundColor: 'rgba(255 255 255 / 0.7)',
-    boxShadow:
-      'inset 1.5px 1.5px 6px rgba(255 255 255 / 0.85), inset -1.5px -1.5px 6px rgba(160 190 250 / 0.9)',
-    color: '#1a2e65',
-    outline: 'none',
-    transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
   },
   button: {
     flex: '1 1 100%',
-    padding: '14px',
-    background: 'linear-gradient(135deg, #6294f7 0%, #3679f8 90%)',
+    padding: '12px',
+    backgroundColor: '#1f2937',
     color: '#fff',
     border: 'none',
-    borderRadius: '20px',
-    fontWeight: '700',
-    fontSize: '1.2rem',
+    borderRadius: '10px',
+    fontWeight: 'bold',
+    fontSize: '16px',
     cursor: 'pointer',
-    boxShadow: '0 6px 15px rgba(54 121 243 / 0.6)',
-    userSelect: 'none',
-    transition: 'background 0.3s ease, box-shadow 0.3s ease',
   },
   table: {
     width: '100%',
     borderCollapse: 'separate',
     borderSpacing: '0 12px',
     textAlign: 'left',
-    fontWeight: '600',
-    color: '#26427b',
-    userSelect: 'text',
   },
   th: {
-    backgroundColor: '#638cec',
+    backgroundColor: '#1f2937',
     color: '#fff',
     padding: '12px',
-    borderRadius: '12px 12px 0 0',
+    borderRadius: '10px 10px 0 0',
   },
   td: {
-    backgroundColor: 'rgba(245, 248, 253, 0.8)',
-    padding: '14px 12px',
-    borderRadius: '12px',
-    boxShadow: 'inset 1px 1px 6px rgba(180, 200, 255, 0.4)',
-    color: '#1a2e65',
-    fontSize: '0.95rem',
-  },
-  tableRow: {
-    transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-  },
-  actionButton: {
-    fontWeight: '600',
-    padding: '8px 16px',
-    borderRadius: '12px',
-    border: 'none',
-    cursor: 'pointer',
-    userSelect: 'none',
-    fontSize: '0.9rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  deleteBtn: {
-    backgroundColor: '#f24e4e',
-    color: '#fff',
-    boxShadow: '0 4px 12px rgba(242, 78, 78, 0.7)',
-    transition: 'background-color 0.25s ease',
-  },
-  editBtn: {
-    backgroundColor: '#3679f8',
-    color: '#fff',
-    boxShadow: '0 4px 12px rgba(54, 121, 243, 0.7)',
-    transition: 'background-color 0.25s ease',
+    backgroundColor: '#f9fafb',
+    padding: '12px',
+    borderRadius: '10px',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
   },
 };
 

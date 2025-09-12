@@ -1,186 +1,137 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
 function Login() {
-  const [data, fromData] = useState({
-    email: '',
-    password: ''
-  });
-
-  const handleChange = (e) => {
-    fromData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/examinee/login', data);
-      if (res.data.message === "Login Successfully") {
-        localStorage.setItem("userRole", res.data.user.role);
-        localStorage.setItem("userEmail", res.data.user.email);
-        localStorage.setItem("userId", res.data.user.id);
-        window.location.href = '/user/';
-      }
-    } catch (error) {
-      alert('Login failed. Please check your credentials.');
-    }
-  };
-
   return (
     <div className="login-wrapper">
-      <form className="login-form" onSubmit={handleSubmit} noValidate>
-        <h3>Welcome Back</h3>
-        <div className="form-group">
-          <label htmlFor="email" className="form-label">Email Address</label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            className="form-control"
-            placeholder="Enter your email"
-            onChange={handleChange}
-            required
-            autoComplete="username"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            className="form-control"
-            placeholder="Enter your password"
-            onChange={handleChange}
-            required
-            autoComplete="current-password"
-          />
-        </div>
-        <button type="submit" className="btn-primary">Login</button>
-      </form>
-
-      <style>{`
-        /* Full viewport with subtle blue-gray gradient */
+      <style>
+        {`
+        /* Background wrapper */
         .login-wrapper {
-          height: 100vh;
-          width: 100vw;
+          background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
+          min-height: 100vh;
           display: flex;
           justify-content: center;
           align-items: center;
-          background: linear-gradient(135deg, #dae9f7, #c4d4ec);
-          font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           position: relative;
           overflow: hidden;
         }
 
-        /* Glassmorphic login card */
-        .login-form {
-          background: rgba(255, 255, 255, 0.15);
-          backdrop-filter: blur(20px);
-          border-radius: 25px;
-          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-          padding: 40px 38px;
+        /* Gradient overlay */
+        .login-wrapper::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
-          max-width: 420px;
-          color: #112d4e;
-          display: flex;
-          flex-direction: column;
-          transition: transform 0.4s ease, box-shadow 0.4s ease;
+          height: 100%;
+          background: rgba(0,0,0,0.4);
+          backdrop-filter: blur(3px);
+          z-index: 1;
         }
+
+        /* Glassmorphism card */
+        .login-form {
+          position: relative;
+          z-index: 2;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(15px);
+          border-radius: 20px;
+          padding: 40px;
+          width: 100%;
+          max-width: 400px;
+          color: white;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          transition: all 0.4s ease-in-out;
+        }
+
         .login-form:hover {
-          transform: scale(1.04);
-          box-shadow: 0 12px 48px rgba(31, 38, 135, 0.25);
+          transform: scale(1.02);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* Heading */
         .login-form h3 {
-          margin-bottom: 30px;
-          font-size: 2.4rem;
-          font-weight: 700;
-          letter-spacing: 1px;
           text-align: center;
-          color: #0e223d;
-          text-shadow: 0 1px 4px rgba(14, 34, 61, 0.3);
+          margin-bottom: 30px;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #ffffff;
         }
 
-        /* Labels */
         .form-label {
-          font-weight: 600;
-          font-size: 1rem;
-          margin-bottom: 8px;
-          color: #0f395c;
-          letter-spacing: 0.6px;
-          display: block;
+          font-weight: 500;
+          font-size: 0.9rem;
         }
 
-        /* Inputs with neumorphic style */
         .form-control {
-          padding: 14px 18px;
-          border-radius: 16px;
+          border-radius: 12px;
+          padding: 12px;
           border: none;
           outline: none;
           width: 100%;
-          font-size: 1rem;
-          font-weight: 500;
-          background: #e3ecf9;
-          box-shadow:
-            inset 6px 6px 10px #bdd1f7,
-            inset -6px -6px 10px #ffffff;
-          color: #0e223d;
-          transition: all 0.35s ease;
-          margin-bottom: 22px;
-          font-family: inherit;
+          margin-bottom: 20px;
+          background-color: rgba(255, 255, 255, 0.2);
+          color: white;
+          transition: all 0.3s ease;
         }
 
         .form-control::placeholder {
-          color: #9bb7d4;
-          font-weight: 400;
+          color: #f0f0f0;
         }
 
         .form-control:focus {
-          box-shadow:
-            inset 3px 3px 6px #a5bbdb,
-            inset -3px -3px 6px #f5fcff;
-          background: #f0f6ff;
-          color: #093360;
+          background-color: rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* Button with gradient & subtle shadow */
         .btn-primary {
-          margin-top: 8px;
-          background: linear-gradient(135deg, #4b79a1, #283e51);
-          color: #d2e2fc;
-          padding: 14px 0;
-          font-size: 1.15rem;
-          font-weight: 700;
+          background: linear-gradient(135deg, #6e8efb, #a777e3);
           border: none;
-          border-radius: 25px;
-          cursor: pointer;
-          box-shadow: 0 5px 16px rgba(34, 51, 85, 0.7);
-          transition: background 0.3s ease, box-shadow 0.3s ease;
-          font-family: inherit;
-          letter-spacing: 0.6px;
-          user-select: none;
-        }
-        .btn-primary:hover,
-        .btn-primary:focus {
-          background: linear-gradient(135deg, #6a99cc, #405977);
-          box-shadow: 0 8px 24px rgba(45, 68, 110, 0.95);
-          outline: none;
+          border-radius: 12px;
+          padding: 12px;
+          width: 100%;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: all 0.3s ease;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(174, 113, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
           .login-form {
-            padding: 30px 28px;
-            max-width: 320px;
-          }
-          .login-form h3 {
-            font-size: 1.8rem;
-            margin-bottom: 24px;
+            margin: 20px;
+            padding: 30px;
           }
         }
-      `}</style>
+      `}
+      </style>
+
+      {/* Form Container */}
+      <form className="login-form">
+        <h3>Login to Your World</h3>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Email Address</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            placeholder="Enter your email"
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary mt-3">Login</button>
+      </form>
     </div>
   );
 }
