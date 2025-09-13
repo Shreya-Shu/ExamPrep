@@ -17,7 +17,7 @@ function Examinee() {
 
   const handleFetch = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/examinee');
+      const res = await axios.get('https://examprep-2.onrender.com/api/examinee');
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
