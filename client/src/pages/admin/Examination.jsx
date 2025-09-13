@@ -91,7 +91,7 @@ const Examination = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/exams', formData);
+      await axios.post('https://examprep-2.onrender.com/api/exams', formData);
       alert('Exam Created Successfully');
       // Reset form
       setFormData({
