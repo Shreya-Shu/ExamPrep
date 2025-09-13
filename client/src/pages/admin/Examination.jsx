@@ -21,8 +21,8 @@ const Examination = () => {
     const fetchData = async () => {
       try {
         const [subjectRes, sessionRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/subject'),
-          axios.get('http://localhost:5000/api/session'),
+          axios.get('https://examprep-2.onrender.comapi/subject'),
+          axios.get('https://examprep-2.onrender.com/api/session'),
         ]);
         setSubjects(subjectRes.data.data || []);
         setSessions(sessionRes.data.data || []);
