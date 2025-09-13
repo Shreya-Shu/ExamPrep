@@ -10,7 +10,7 @@ const ExamResultsDeclaration = ({ exams }) => {
     setLoading(true);
     setMessage(null);
     try {
-      const response = await axios.post(`http://localhost:5000/api/exams/result/${examResultId}`);
+      const response = await axios.post(`https://examprep-2.onrender.com/api/exams/result/${examResultId}`);
       setMessage({ type: 'success', text: response.data.message });
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to declare result' });

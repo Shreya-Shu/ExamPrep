@@ -36,7 +36,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const res = await axios.put('http://localhost:5000/api/examinee/change', data);
+      const res = await axios.put('https://examprep-2.onrender.com/api/examinee/change', data);
       if (res.status === 200 && res.data.success) {
         alert(res.data.message);
         // Clear form

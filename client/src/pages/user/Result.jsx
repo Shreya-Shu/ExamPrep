@@ -5,7 +5,7 @@ const Result = () => {
     const [data, setData] = useState([])
     const userId = localStorage.getItem('userId')
     const handlefetch = async () => {
-        const res = await axios.get(`http://localhost:5000/api/exams/examinee-result/${userId}`);
+        const res = await axios.get(`https://examprep-2.onrender.com/api/exams/examinee-result/${userId}`);
         console.log(res)
         setData(Array.isArray(res.data.message) ? res.data.message : [res.data.message]);
 

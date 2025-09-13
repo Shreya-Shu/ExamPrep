@@ -15,7 +15,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', form);
+      const res = await axios.post('https://examprep-2.onrender.com/api/admin/login', form);
 
       if (res.data.message === 'Login successfully') {
         localStorage.setItem('role', res.data.admin.role);

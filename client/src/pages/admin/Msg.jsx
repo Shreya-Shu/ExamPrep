@@ -17,7 +17,7 @@ const Message = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/message', formData);
+            await axios.post('https://examprep-2.onrender.com/api/message', formData);
 
             alert(response.data.message);
             setFormData({ question: '', email: formData.email });
@@ -31,7 +31,7 @@ const Message = () => {
     const fetchMessages = async () => {
         try {
             const userId = localStorage.getItem('userId');
-            const response = await axios.get(`http://localhost:5000/api/message/${userId}`);
+            const response = await axios.get(`https://examprep-2.onrender.com/api/message/${userId}`);
             setMessages(response.data.message);
         } catch (error) {
             console.error('Error fetching messages:', error);

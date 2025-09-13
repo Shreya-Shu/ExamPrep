@@ -17,7 +17,7 @@ const Registration = () => {
 
   const handlefetch = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/session/');
+      const res = await axios.get('https://examprep-2.onrender.com/api/session/');
       setSession(res.data.data);
     } catch (er) {
       console.log(er);

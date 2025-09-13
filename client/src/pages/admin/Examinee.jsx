@@ -17,7 +17,7 @@ function Examinee() {
 
   const handleFetch = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/examinee');
+      const res = await axios.get('https://examprep-2.onrender.com/api/examinee');
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -37,11 +37,11 @@ function Examinee() {
 
     try {
       if (editMode) {
-        await axios.put(`http://localhost:5000/api/examinee/${editId}`, formData);
+        await axios.put(`https://examprep-2.onrender.com/api/examinee/${editId}`, formData);
         setEditMode(false);
         setEditId(null);
       } else {
-        await axios.post('http://localhost:5000/api/examinee', formData);
+        await axios.post('https://examprep-2.onrender.com/api/examinee', formData);
       }
 
       setFormData({
@@ -61,7 +61,7 @@ function Examinee() {
   };
 
   const handleDelete = async (id) => {
-    const res = await axios.delete(`http://localhost:5000/api/examinee/${id}`);
+    const res = await axios.delete(`https://examprep-2.onrender.com/api/examinee/${id}`);
     if (res) {
       alert('Deleted successfully');
       handleFetch();
