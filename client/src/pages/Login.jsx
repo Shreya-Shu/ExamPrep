@@ -2,28 +2,39 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 function Login() {
-  const [data, fromData] = useState({
+  const [data, setData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
 
   const handleChange = (e) => {
-    fromData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/examinee/login', data);
-      if (res.data.message === "Login Successfully") {
-        localStorage.setItem("userRole", res.data.user.role);
-        localStorage.setItem("userEmail", res.data.user.email);
-        localStorage.setItem("userId", res.data.user.id);
+      const res = await axios.post(
+        'http://localhost:5000/api/examinee/login',
+        data
+      );
+      if (res.data.message === 'Login Successfully') {
+        localStorage.setItem('userRole', res.data.user.role);
+        localStorage.setItem('userEmail', res.data.user.email);
+        localStorage.setItem('userId', res.data.user.id);
         window.location.href = '/user/';
       }
     } catch (error) {
       alert('Login failed. Please check your credentials.');
     }
+  };
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    window.location.href = '/adlogin';
   };
 
   return (
@@ -39,6 +50,7 @@ function Login() {
             className="form-control"
             placeholder="Enter your email"
             onChange={handleChange}
+            value={data.email}
             required
             autoComplete="username"
           />
@@ -52,15 +64,22 @@ function Login() {
             className="form-control"
             placeholder="Enter your password"
             onChange={handleChange}
+            value={data.password}
             required
             autoComplete="current-password"
           />
         </div>
         <button type="submit" className="btn-primary">Login</button>
+        <button
+          type="button"
+          className="admin-btn"
+          onClick={handleAdminLogin}
+        >
+          Admin Login
+        </button>
       </form>
 
       <style>{`
-        /* Full viewport with subtle blue-gray gradient */
         .login-wrapper {
           height: 100vh;
           width: 100vw;
@@ -72,8 +91,6 @@ function Login() {
           position: relative;
           overflow: hidden;
         }
-
-        /* Glassmorphic login card */
         .login-form {
           background: rgba(255, 255, 255, 0.15);
           backdrop-filter: blur(20px);
@@ -91,8 +108,6 @@ function Login() {
           transform: scale(1.04);
           box-shadow: 0 12px 48px rgba(31, 38, 135, 0.25);
         }
-
-        /* Heading */
         .login-form h3 {
           margin-bottom: 30px;
           font-size: 2.4rem;
@@ -102,8 +117,6 @@ function Login() {
           color: #0e223d;
           text-shadow: 0 1px 4px rgba(14, 34, 61, 0.3);
         }
-
-        /* Labels */
         .form-label {
           font-weight: 600;
           font-size: 1rem;
@@ -112,8 +125,6 @@ function Login() {
           letter-spacing: 0.6px;
           display: block;
         }
-
-        /* Inputs with neumorphic style */
         .form-control {
           padding: 14px 18px;
           border-radius: 16px;
@@ -131,12 +142,10 @@ function Login() {
           margin-bottom: 22px;
           font-family: inherit;
         }
-
         .form-control::placeholder {
           color: #9bb7d4;
           font-weight: 400;
         }
-
         .form-control:focus {
           box-shadow:
             inset 3px 3px 6px #a5bbdb,
@@ -144,8 +153,6 @@ function Login() {
           background: #f0f6ff;
           color: #093360;
         }
-
-        /* Button with gradient & subtle shadow */
         .btn-primary {
           margin-top: 8px;
           background: linear-gradient(135deg, #4b79a1, #283e51);
@@ -168,8 +175,28 @@ function Login() {
           box-shadow: 0 8px 24px rgba(45, 68, 110, 0.95);
           outline: none;
         }
-
-        /* Responsive adjustments */
+        .admin-btn {
+          margin-top: 14px;
+          background: linear-gradient(135deg, #7ca5ff, #5185f7);
+          color: #fff;
+          padding: 12px 0;
+          font-size: 1.05rem;
+          font-weight: 700;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          box-shadow: 0 5px 20px rgba(90, 130, 255, 0.55);
+          transition: background 0.3s, box-shadow 0.3s;
+          font-family: inherit;
+          letter-spacing: 0.5px;
+          user-select: none;
+        }
+        .admin-btn:hover,
+        .admin-btn:focus {
+          background: linear-gradient(135deg, #5185f7, #3a67d6);
+          box-shadow: 0 8px 24px rgba(45, 68, 110, 0.95);
+          outline: none;
+        }
         @media (max-width: 480px) {
           .login-form {
             padding: 30px 28px;
