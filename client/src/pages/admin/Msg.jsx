@@ -17,7 +17,7 @@ const Message = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/message', formData);
+            await axios.post('https://examprep-2.onrender.com/api/message', formData);
 
             alert(response.data.message);
             setFormData({ question: '', email: formData.email });
