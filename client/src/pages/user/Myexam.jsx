@@ -7,7 +7,7 @@ const MyExam = () => {
 
   const fetchExams = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/exams/exams');
+      const res = await axios.get('https://examprep-2.onrender.com/api/exams/exams');
       setExam(res.data);
     } catch (error) {
       console.error("Failed to fetch exams", error);
